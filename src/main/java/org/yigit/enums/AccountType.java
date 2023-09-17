@@ -1,2 +1,6 @@
-package org.yigit.enums;public class AccountType {
+package org.yigit.enums;
+
+public enum AccountType {
+    CHECKING,
+    SAVING
 }
