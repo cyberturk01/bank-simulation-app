@@ -1,13 +1,14 @@
 package org.yigit.service.impl;
 
-import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.stereotype.Component;
 import org.yigit.enums.AccountType;
 import org.yigit.exception.AccountOwnerShipException;
 import org.yigit.exception.BadRequestException;
+import org.yigit.exception.BalanceNotSufficientException;
 import org.yigit.model.Account;
 import org.yigit.model.Transaction;
 import org.yigit.repository.AccountRepository;
+import org.yigit.repository.TransactionRepository;
 import org.yigit.service.TransactionService;
 
 import java.math.BigDecimal;
@@ -19,16 +20,42 @@ import java.util.UUID;
 public class TransactionServiceImpl implements TransactionService {
 
     private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
-    public TransactionServiceImpl(AccountRepository accountRepository) {
+    public TransactionServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
     public Transaction makeTransfer(Account sender, Account receiver, BigDecimal amount, Date creationDate, String message) {
         validateAccount(sender, receiver);
         checkAccountOwnerShip(sender, receiver);
-        return null;
+        executeBalanceAndUpdateIfRequired(amount, sender, receiver);
+        //After all validations are done, and money is transferred, we need to create Transaction
+        Transaction transaction= Transaction.builder()
+                .sender(sender.getId())
+                .receiver(receiver.getId())
+                .amount(amount)
+                .createDate(creationDate)
+                .message(message).build();
+        //Save it into DB and return it.
+        return transactionRepository.save(transaction);
+    }
+
+    private void executeBalanceAndUpdateIfRequired(BigDecimal amount, Account sender, Account receiver) {
+        if(checkSenderBalance(sender,amount)){
+            //update sender and receiver balance
+            sender.setBalance(sender.getBalance().subtract(amount));
+            receiver.setBalance(receiver.getBalance().add(amount));
+        }else{
+            throw new BalanceNotSufficientException("Balance is not enough for this transfer.");
+        }
+    }
+
+    private boolean checkSenderBalance(Account sender, BigDecimal amount) {
+        //verify sender has enough balance to send
+        return sender.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) >= 0;
     }
 
     private void checkAccountOwnerShip(Account sender, Account receiver) {
