@@ -1,7 +1,6 @@
 package org.yigit.repository;
 
 import org.springframework.stereotype.Component;
-import org.yigit.model.Account;
 import org.yigit.model.Transaction;
 
 import java.util.ArrayList;
@@ -16,4 +15,8 @@ public class TransactionRepository {
         transactionList.add(transaction);
         return transaction;
     };
+
+    public List<Transaction> findAll() {
+        return transactionList;
+    }
 }

@@ -1,5 +1,6 @@
 package org.yigit.service.impl;
 
+import org.springframework.stereotype.Component;
 import org.yigit.enums.AccountType;
 import org.yigit.model.Account;
 import org.yigit.repository.AccountRepository;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Component
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
