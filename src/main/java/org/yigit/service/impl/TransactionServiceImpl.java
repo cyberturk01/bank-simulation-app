@@ -2,6 +2,7 @@ package org.yigit.service.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.yigit.enums.AccountType;
 import org.yigit.exception.AccountOwnerShipException;
 import org.yigit.exception.BadRequestException;
@@ -18,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Component
+@Service
 public class TransactionServiceImpl implements TransactionService {
 
     @Value("${under_construction}")

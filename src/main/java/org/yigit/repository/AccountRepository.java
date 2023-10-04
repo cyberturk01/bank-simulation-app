@@ -27,4 +27,9 @@ public class AccountRepository {
                 .findFirst()
                 .orElseThrow(()->new RecordNotFoundException("Account could not be found! "));
     }
+    public void deleteById(UUID id) {
+        accountList.removeIf(account -> account.getId().equals(id));
+        System.out.println(accountList);
+    }
+
 }
