@@ -45,9 +45,14 @@ public class AccountController {
         return "redirect:/index";
     }
 
-    @GetMapping("/index/{id}")
-    public String deleteForm(@PathVariable("id") UUID id, Model model) {
+    @GetMapping("/delete/{id}")
+    public String deleteForm(@PathVariable("id") UUID id) {
         accountService.deleteById(id);
+        return "redirect:/index";
+    }
+    @GetMapping("/activate/{id}")
+    public String activate(@PathVariable("id") UUID id) {
+        accountService.activateById(id);
         return "redirect:/index";
     }
 

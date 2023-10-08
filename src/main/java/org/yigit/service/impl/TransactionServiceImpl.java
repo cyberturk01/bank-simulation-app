@@ -15,9 +15,11 @@ import org.yigit.repository.TransactionRepository;
 import org.yigit.service.TransactionService;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -102,5 +104,13 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<Transaction> findAllTransaction() {
         return transactionRepository.findAll();
+    }
+
+    @Override
+    public List<Transaction> last10Transaction() {
+        return transactionRepository.findAll().stream()
+                .sorted(Comparator.comparing(Transaction::getCreateDate).reversed())
+                .limit(10)
+                .collect(Collectors.toList());
     }
 }

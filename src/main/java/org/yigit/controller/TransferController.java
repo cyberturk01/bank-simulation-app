@@ -33,7 +33,7 @@ public class TransferController {
     public String makeTransaction(Model model) {
         model.addAttribute("transaction", Transaction.builder().build());
         model.addAttribute("accounts", accountService.listAllAccount());
-        model.addAttribute("transactionList", transactionService.findAllTransaction());
+        model.addAttribute("transactionList", transactionService.last10Transaction());
         return "/transaction/make-transfer";
     }
 
