@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.yigit.model.Account;
 import org.yigit.model.Transaction;
@@ -11,6 +13,8 @@ import org.yigit.service.AccountService;
 import org.yigit.service.TransactionService;
 
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class TransferController {
@@ -38,10 +42,19 @@ public class TransferController {
     }
 
     @PostMapping("/make-transfer")
-    public String makeTransaction(Transaction transaction) {
+    public String makeTransaction(@ModelAttribute("transaction") Transaction transaction) {
         Account sender = accountService.findById(transaction.getSender());
         Account receiver = accountService.findById(transaction.getReceiver());
         transactionService.makeTransfer(sender, receiver, transaction.getAmount(), new Date(), transaction.getMessage());
         return "redirect:/make-transfer";
+    }
+
+    @GetMapping("/transaction/{id}")
+    public String getTransactionData(@PathVariable("id") UUID id, Model model) {
+        List<Transaction> transactionListById = transactionService.findTransactionListById(id);
+        model.addAttribute("transactions",transactionListById);
+
+        System.out.println(id);
+        return "transaction/transaction";
     }
 }
