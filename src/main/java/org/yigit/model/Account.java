@@ -8,6 +8,7 @@ import org.yigit.enums.AccountStatus;
 import org.yigit.enums.AccountType;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.Date;
