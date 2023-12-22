@@ -15,7 +15,6 @@ import org.yigit.service.TransactionService;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class TransferController {
@@ -56,7 +55,7 @@ public class TransferController {
     }
 
     @GetMapping("/transaction/{id}")
-    public String getTransactionData(@PathVariable("id") UUID id, Model model) {
+    public String getTransactionData(@PathVariable("id") Long id, Model model) {
         List<TransactionDTO> transactionDTOListById = transactionService.findTransactionListById(id);
         model.addAttribute("transactions", transactionDTOListById);
 

@@ -20,7 +20,7 @@ public class AccountRepository {
         return accountDTOList;
     }
 
-    public AccountDTO findById(UUID id) {
+    public AccountDTO findById(Long id) {
         return accountDTOList.stream().filter(a->a.getId().equals(id))
                 .findFirst()
                 .orElseThrow(()->new RecordNotFoundException("Account could not be found! "));

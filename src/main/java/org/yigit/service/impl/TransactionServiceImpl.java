@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,12 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
             checkAccountOwnerShip(sender, receiver);
             executeBalanceAndUpdateIfRequired(amount, sender, receiver);
             //After all validations are done, and money is transferred, we need to create Transaction
-            TransactionDTO transactionDTO = TransactionDTO.builder()
-                    .sender(sender.getId())
-                    .receiver(receiver.getId())
-                    .amount(amount)
-                    .createDate(creationDate)
-                    .message(message).build();
+            TransactionDTO transactionDTO = new TransactionDTO();
             //Save it into DB and return it.
             return transactionRepository.save(transactionDTO);
         }else{
@@ -96,7 +90,7 @@ public class TransactionServiceImpl implements TransactionService {
         findAccountById(receiver.getId());
     }
 
-    private void findAccountById(UUID id) {
+    private void findAccountById(Long id) {
         accountRepository.findById(id);
     }
 
@@ -114,7 +108,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionDTO> findTransactionListById(UUID id) {
+    public List<TransactionDTO> findTransactionListById(Long id) {
         return transactionRepository.findAll().stream()
                 .filter(transactionDTO -> transactionDTO.getSender().equals(id) || transactionDTO.getReceiver().equals(id) )
                 .collect(Collectors.toList());

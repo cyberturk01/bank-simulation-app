@@ -13,7 +13,6 @@ import org.yigit.service.AccountService;
 
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.UUID;
 
 @Controller
 public class AccountController {
@@ -52,12 +51,12 @@ public class AccountController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteForm(@PathVariable("id") UUID id) {
+    public String deleteForm(@PathVariable("id") Long id) {
         accountService.deleteById(id);
         return "redirect:/index";
     }
     @GetMapping("/activate/{id}")
-    public String activate(@PathVariable("id") UUID id) {
+    public String activate(@PathVariable("id") Long id) {
         accountService.activateById(id);
         return "redirect:/index";
     }
