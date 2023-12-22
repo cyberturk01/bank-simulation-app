@@ -7,12 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.yigit.dto.AccountDTO;
 import org.yigit.enums.AccountType;
-import org.yigit.model.Account;
 import org.yigit.service.AccountService;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -34,20 +33,20 @@ public class AccountController {
     @GetMapping("/create-form")
     public String getCreateForm(Model model) {
         //We need to provide empty Account Object to fill it up with data
-        model.addAttribute("account", Account.builder().build());
+        model.addAttribute("account", new AccountDTO());
         //We need to provide Account Type
         model.addAttribute("types", AccountType.values());
         return "account/create-account";
     }
 
     @PostMapping("/create")
-    public String createAccount(@Valid @ModelAttribute("account") Account account, BindingResult bindingResult, Model model) {
+    public String createAccount(@Valid @ModelAttribute("account") AccountDTO accountDTO, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()){
             //Dropdown values will be loaded
             model.addAttribute("types", AccountType.values());
             return "account/create-account";
         }
-        accountService.createNewAccount(account.getBalance(), new Date(), account.getAccountType(), account.getUserId());
+        accountService.createNewAccount(accountDTO.getBalance(), new Date(), accountDTO.getAccountType(), accountDTO.getUserId());
         //return to which page to redirect, might be different endpoint not only folder structure
         return "redirect:/index";
     }

@@ -1,25 +1,20 @@
-package org.yigit.model;
+package org.yigit.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.yigit.enums.AccountStatus;
 import org.yigit.enums.AccountType;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Account {
-    private UUID id;
+public class AccountDTO {
+    private Long id;
     @NotNull
     @Positive
     private BigDecimal balance;

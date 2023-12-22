@@ -3,15 +3,14 @@ package org.yigit.converter;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import org.yigit.model.Account;
-import org.yigit.model.Transaction;
+import org.yigit.dto.AccountDTO;
 import org.yigit.service.AccountService;
 
 import java.util.UUID;
 
 @Component
 @ConfigurationPropertiesBinding
-public class AccountConverter implements Converter<String, Account> {
+public class AccountConverter implements Converter<String, AccountDTO> {
 
     private final AccountService accountService;
 
@@ -20,7 +19,7 @@ public class AccountConverter implements Converter<String, Account> {
     }
 
     @Override
-    public Account convert(String source) {
+    public AccountDTO convert(String source) {
         return accountService.findById(UUID.fromString(source));
     }
 }

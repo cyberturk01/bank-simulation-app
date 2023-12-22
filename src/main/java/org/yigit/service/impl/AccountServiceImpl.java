@@ -1,10 +1,9 @@
 package org.yigit.service.impl;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.yigit.dto.AccountDTO;
 import org.yigit.enums.AccountStatus;
 import org.yigit.enums.AccountType;
-import org.yigit.model.Account;
 import org.yigit.repository.AccountRepository;
 import org.yigit.service.AccountService;
 
@@ -23,37 +22,37 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account createNewAccount(BigDecimal balance, Date createDate, AccountType accountType, Long userId) {
+    public AccountDTO createNewAccount(BigDecimal balance, Date createDate, AccountType accountType, Long userId) {
         //We need to create Account object with builder
-        Account account = Account.builder().id(UUID.randomUUID())
+        AccountDTO accountDTO = AccountDTO.builder().id(UUID.randomUUID())
                 .balance(balance).creationDate(createDate)
                 .accountType(accountType).userId(userId).accountStatus(AccountStatus.ACTIVE).build();
         //Save it into database(repository)
         //return the object created
-        return accountRepository.save(account);
+        return accountRepository.save(accountDTO);
     }
 
     @Override
-    public List<Account> listAllAccount() {
+    public List<AccountDTO> listAllAccount() {
         return accountRepository.findAll();
     }
 
     @Override
     public void deleteById(UUID id) {
-        Account account = accountRepository.findById(id);
-        account.setAccountStatus(AccountStatus.DELETED);
+        AccountDTO accountDTO = accountRepository.findById(id);
+        accountDTO.setAccountStatus(AccountStatus.DELETED);
 //        accountRepository.deleteById(id);
     }
 
     @Override
     public void activateById(UUID id) {
-        Account account = accountRepository.findById(id);
-        account.setAccountStatus(AccountStatus.ACTIVE);
+        AccountDTO accountDTO = accountRepository.findById(id);
+        accountDTO.setAccountStatus(AccountStatus.ACTIVE);
     }
 
 
     @Override
-    public Account findById(UUID id) {
+    public AccountDTO findById(UUID id) {
         return accountRepository.findById(id);
     }
 }
