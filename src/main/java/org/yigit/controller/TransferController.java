@@ -37,7 +37,7 @@ public class TransferController {
     public String makeTransaction(Model model) {
         //what we need to provide to make transfer happen
         //we need to provide empty transaction object
-        model.addAttribute("transaction", new TransactionDTO());
+        model.addAttribute("transactionDTO", new TransactionDTO());
         //we need to provide list of all accounts
         model.addAttribute("accounts", accountService.listAllActiveAccount());
         //we need list of last 10 transactions to fill the table(business logic is missing)
@@ -46,7 +46,7 @@ public class TransferController {
     }
 
     @PostMapping("/make-transfer")
-    public String makeTransaction(@Valid @ModelAttribute("transaction") TransactionDTO transactionDTO, BindingResult bindingResult, Model model) {
+    public String makeTransaction(@Valid @ModelAttribute("transactionDTO") TransactionDTO transactionDTO, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()){
             model.addAttribute("accounts", accountService.listAllAccount());
             model.addAttribute("transactionList", transactionService.last10Transaction());
