@@ -33,11 +33,15 @@ public class AccountController {
     public String getCreateForm(Model model) {
         //We need to provide empty Account Object to fill it up with data
         model.addAttribute("account", new AccountDTO());
-        //We need to provide Account Type
+        //we need to provide accountType enum info for filling the dropdown options
         model.addAttribute("types", AccountType.values());
         return "account/create-account";
     }
 
+    //create a method to capture information from ui
+    //print them on the console.
+    //trigger createNewAccount method, create the account based on the user input.
+    //once user created return back to the index page.
     @PostMapping("/create")
     public String createAccount(@Valid @ModelAttribute("account") AccountDTO accountDTO, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()){

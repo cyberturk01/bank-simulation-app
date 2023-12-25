@@ -14,4 +14,7 @@ public interface AccountService {
     void deleteById(Long id);
     void activateById(Long id);
     AccountDTO findById(Long id);
+    List<AccountDTO> listAllActiveAccount();
+
+    void updateAccount(AccountDTO accountDTO);
 }

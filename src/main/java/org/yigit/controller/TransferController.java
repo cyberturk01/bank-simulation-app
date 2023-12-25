@@ -35,8 +35,12 @@ public class TransferController {
 
     @GetMapping("/make-transfer")
     public String makeTransaction(Model model) {
+        //what we need to provide to make transfer happen
+        //we need to provide empty transaction object
         model.addAttribute("transaction", new TransactionDTO());
-        model.addAttribute("accounts", accountService.listAllAccount());
+        //we need to provide list of all accounts
+        model.addAttribute("accounts", accountService.listAllActiveAccount());
+        //we need list of last 10 transactions to fill the table(business logic is missing)
         model.addAttribute("transactionList", transactionService.last10Transaction());
         return "/transaction/make-transfer";
     }
@@ -48,6 +52,8 @@ public class TransferController {
             model.addAttribute("transactionList", transactionService.last10Transaction());
             return "/transaction/make-transfer";
         }
+        //I have UUID of  accounts but I need to provide Account object.
+        //I need to find the Accounts based on the ID that I have and use as a parameter to complete makeTransfer method.
         AccountDTO sender = accountService.findById(transactionDTO.getSender().getId());
         AccountDTO receiver = accountService.findById(transactionDTO.getReceiver().getId());
         transactionService.makeTransfer(sender, receiver, transactionDTO.getAmount(), new Date(), transactionDTO.getMessage());
@@ -59,6 +65,9 @@ public class TransferController {
         List<TransactionDTO> transactionDTOListById = transactionService.findTransactionListById(id);
         model.addAttribute("transactions", transactionDTOListById);
 
+        //get the list of transactions based on id and return as a model attribute
+        //TASK  the method(service and repository)
+        //findTransactionListById
         System.out.println(id);
         return "transaction/transaction";
     }
