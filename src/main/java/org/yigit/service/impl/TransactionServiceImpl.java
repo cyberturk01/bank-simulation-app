@@ -9,6 +9,7 @@ import org.yigit.exception.AccountOwnerShipException;
 import org.yigit.exception.BadRequestException;
 import org.yigit.exception.BalanceNotSufficientException;
 import org.yigit.exception.UnderConstructionException;
+import org.yigit.mapper.TransactionMapper;
 import org.yigit.repository.AccountRepository;
 import org.yigit.repository.TransactionRepository;
 import org.yigit.service.TransactionService;
@@ -27,10 +28,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final TransactionMapper transactionMapper;
 
-    public TransactionServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository) {
+    public TransactionServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.transactionMapper = transactionMapper;
     }
 
     @Override
@@ -41,8 +44,9 @@ public class TransactionServiceImpl implements TransactionService {
             executeBalanceAndUpdateIfRequired(amount, sender, receiver);
             //After all validations are done, and money is transferred, we need to create Transaction
             TransactionDTO transactionDTO = new TransactionDTO();
+            transactionRepository.save(transactionMapper.convertToEntity(transactionDTO));
             //Save it into DB and return it.
-            return transactionRepository.save(transactionDTO);
+            return transactionDTO;
         }else{
             throw new UnderConstructionException("App is under construction, please try again later");
         }
