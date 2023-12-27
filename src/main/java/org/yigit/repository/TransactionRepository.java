@@ -1,22 +1,21 @@
 package org.yigit.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
-import org.yigit.model.Transaction;
+import org.springframework.stereotype.Repository;
+import org.yigit.dto.TransactionDTO;
+import org.yigit.entity.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class TransactionRepository {
+@Repository
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    public static List<Transaction> transactionList= new ArrayList<>();
+    @Query(nativeQuery = true, value = "SELECT * FROM transactions order by create_date desc limit 10")
+    List<Transaction> findLast10Transactions();
 
-    public Transaction save(Transaction transaction){
-        transactionList.add(transaction);
-        return transaction;
-    };
-
-    public List<Transaction> findAll() {
-        return transactionList;
-    }
+    @Query(value = "SELECT t FROM Transaction t where t.sender.id = ?1 or t.receiver.id = ?1")
+    List<Transaction> findTransactionListByAccountId(Long id);
 }

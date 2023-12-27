@@ -1,59 +1,82 @@
 package org.yigit.service.impl;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.yigit.dto.AccountDTO;
+import org.yigit.entity.Account;
 import org.yigit.enums.AccountStatus;
 import org.yigit.enums.AccountType;
-import org.yigit.model.Account;
+import org.yigit.mapper.AccountMapper;
 import org.yigit.repository.AccountRepository;
 import org.yigit.service.AccountService;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, AccountMapper accountMapper) {
         this.accountRepository = accountRepository;
+        this.accountMapper = accountMapper;
     }
 
     @Override
-    public Account createNewAccount(BigDecimal balance, Date createDate, AccountType accountType, Long userId) {
+    public void createNewAccount(AccountDTO accountDTO) {
         //We need to create Account object with builder
-        Account account = Account.builder().id(UUID.randomUUID())
-                .balance(balance).creationDate(createDate)
-                .accountType(accountType).userId(userId).accountStatus(AccountStatus.ACTIVE).build();
+        accountDTO.setCreationDate(new Date());
+        accountDTO.setAccountStatus(AccountStatus.ACTIVE);
         //Save it into database(repository)
         //return the object created
-        return accountRepository.save(account);
+        accountRepository.save(accountMapper.convertToEntity(accountDTO));
     }
 
     @Override
-    public List<Account> listAllAccount() {
-        return accountRepository.findAll();
+    public List<AccountDTO> listAllAccount() {
+        //We are getting the all list
+        List<Account> list= accountRepository.findAll();
+        //we are converting entity to dto and return as DTO
+        return list.stream().map(accountMapper::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public void deleteById(UUID id) {
-        Account account = accountRepository.findById(id);
+    public void deleteById(Long id) {
+        //find the account object id
+        Account account = accountRepository.findById(id).get();
+        //set status to deleted
         account.setAccountStatus(AccountStatus.DELETED);
 //        accountRepository.deleteById(id);
+        //save the latest state
+        accountRepository.save(account);
     }
 
     @Override
-    public void activateById(UUID id) {
-        Account account = accountRepository.findById(id);
+    public void activateById(Long id) {
+        Account account = accountRepository.findById(id).get();
         account.setAccountStatus(AccountStatus.ACTIVE);
+        accountRepository.save(account);
     }
 
 
     @Override
-    public Account findById(UUID id) {
-        return accountRepository.findById(id);
+    public AccountDTO findById(Long id) {
+        //find the account entity based on id, then convert to dto then return it
+        return accountMapper.convertToDTO(accountRepository.findById(id).get());
+    }
+
+    @Override
+    public List<AccountDTO> listAllActiveAccount() {
+        List<Account> statusActive = accountRepository.findAllByAccountStatus(AccountStatus.ACTIVE);
+        return statusActive.stream().map(accountMapper::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateAccount(AccountDTO accountDTO) {
+        accountRepository.save(accountMapper.convertToEntity(accountDTO));
     }
 }

@@ -7,14 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.yigit.dto.AccountDTO;
 import org.yigit.enums.AccountType;
-import org.yigit.model.Account;
 import org.yigit.service.AccountService;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.UUID;
 
 @Controller
 public class AccountController {
@@ -34,31 +32,35 @@ public class AccountController {
     @GetMapping("/create-form")
     public String getCreateForm(Model model) {
         //We need to provide empty Account Object to fill it up with data
-        model.addAttribute("account", Account.builder().build());
-        //We need to provide Account Type
+        model.addAttribute("accountDTO", new AccountDTO());
+        //we need to provide accountType enum info for filling the dropdown options
         model.addAttribute("types", AccountType.values());
         return "account/create-account";
     }
 
+    //create a method to capture information from ui
+    //print them on the console.
+    //trigger createNewAccount method, create the account based on the user input.
+    //once user created return back to the index page.
     @PostMapping("/create")
-    public String createAccount(@Valid @ModelAttribute("account") Account account, BindingResult bindingResult, Model model) {
+    public String createAccount(@Valid @ModelAttribute("accountDTO") AccountDTO accountDTO, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()){
             //Dropdown values will be loaded
             model.addAttribute("types", AccountType.values());
             return "account/create-account";
         }
-        accountService.createNewAccount(account.getBalance(), new Date(), account.getAccountType(), account.getUserId());
+        accountService.createNewAccount(accountDTO);
         //return to which page to redirect, might be different endpoint not only folder structure
         return "redirect:/index";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteForm(@PathVariable("id") UUID id) {
+    public String deleteForm(@PathVariable("id") Long id) {
         accountService.deleteById(id);
         return "redirect:/index";
     }
     @GetMapping("/activate/{id}")
-    public String activate(@PathVariable("id") UUID id) {
+    public String activate(@PathVariable("id") Long id) {
         accountService.activateById(id);
         return "redirect:/index";
     }

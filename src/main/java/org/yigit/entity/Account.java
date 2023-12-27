@@ -1,32 +1,37 @@
-package org.yigit.model;
+package org.yigit.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.yigit.enums.AccountStatus;
 import org.yigit.enums.AccountType;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
-@Data
+@Entity
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "accounts")
 public class Account {
-    private UUID id;
-    @NotNull
-    @Positive
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private BigDecimal balance;
-    @NotNull
+
+    @Enumerated(EnumType.STRING)
     private AccountType accountType;
+
+    @Column(columnDefinition = "TIMESTAMP")
     private Date creationDate;
-    @NotNull
+
     private Long userId;
+
+    @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
 }
